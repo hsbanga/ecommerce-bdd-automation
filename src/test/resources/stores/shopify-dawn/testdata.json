@@ -1,0 +1,39 @@
+{
+  "products": {
+    "inStock": {
+      "handle": "puff-olive-leaf",
+      "name": "Puff",
+      "variant": "Chocolate",
+      "price": "465.00"
+    },
+    "soldOut": {
+      "handle": "studio-denim",
+      "name": "Studio Bag"
+    }
+  },
+  "collections": {
+    "all": "all",
+    "bags": "bags"
+  },
+  "search": {
+    "validTerm": "bag",
+    "noResultsTerm": "zzqxlorem"
+  },
+  "checkout": {
+    "email": "qa.automation@example.com",
+    "firstName": "QA",
+    "lastName": "Automation",
+    "address1": "123 Test Street",
+    "city": "Toronto",
+    "postalCode": "M5V 2T6",
+    "country": "Canada",
+    "province": "Ontario",
+    "phone": "4165550100"
+  },
+  "login": {
+    "invalid": {
+      "email": "nobody@example.com",
+      "password": "definitely-wrong-password"
+    }
+  }
+}
