@@ -1,6 +1,7 @@
 package com.sarvadalabs.automation.pages;
 
 import com.sarvadalabs.automation.core.BasePage;
+import com.sarvadalabs.automation.core.Locators;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -26,10 +27,40 @@ public class CheckoutPage extends BasePage {
     public void enterEmail(String email) {
         WebElement input = find("checkout.email");
         replaceValue(input, email);
+        if (Locators.isDefined("checkout.consentCheckbox")) {
+            // Some checkouts require a privacy/terms checkbox before the customer step can continue.
+            // Only used when a store profile configures it, and only with the test data of that store.
+            tryFind("checkout.consentCheckbox", Duration.ofSeconds(5)).ifPresent(box -> {
+                boolean isInput = "input".equalsIgnoreCase(box.getTagName());
+                if (!isInput || !box.isSelected()) {
+                    click(box, "checkout.consentCheckbox");
+                }
+            });
+        }
+        if (Locators.isDefined("checkout.continueAfterEmail")) {
+            // Multi-step checkouts (e.g. BigCommerce) reveal the address form only after "Continue"
+            tryFind("checkout.continueAfterEmail", Duration.ofSeconds(5)).ifPresent(button -> {
+                click(button, "checkout.continueAfterEmail");
+                tryFind("checkout.firstName", Duration.ofSeconds(15));
+            });
+        }
     }
 
     public String emailValue() {
         return find("checkout.email").getAttribute("value");
+    }
+
+    /**
+     * True when the email is still in the input, or, for checkouts that collapse the customer
+     * step into a read-only summary after "Continue", when it is shown as text on the page.
+     */
+    public boolean showsEmail(String email) {
+        Optional<WebElement> input = tryFind("checkout.email", Duration.ofSeconds(3));
+        if (input.isPresent()) {
+            return email.equalsIgnoreCase(input.get().getAttribute("value"));
+        }
+        String bodyText = String.valueOf(js("return document.body.innerText;"));
+        return bodyText.toLowerCase().contains(email.toLowerCase());
     }
 
     /**

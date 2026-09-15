@@ -1,0 +1,36 @@
+{
+  "_comment": "Simple product without options. No sold-out product is known on this demo, so that scenario skips. Cart counts are checked on the cart page because the theme hides the header badge.",
+  "products": {
+    "inStock": {
+      "handle": "tiered-wire-basket",
+      "name": "Tiered Wire Basket",
+      "price": "120.00"
+    }
+  },
+  "collections": {
+    "all": "shop-all",
+    "kitchen": "shop-all/kitchen"
+  },
+  "search": {
+    "validTerm": "basket",
+    "altTerm": "journal",
+    "noResultsTerm": "zzqxlorem"
+  },
+  "checkout": {
+    "email": "qa.automation@example.com",
+    "firstName": "QA",
+    "lastName": "Automation",
+    "address1": "123 Test Street",
+    "city": "San Francisco",
+    "postalCode": "94105",
+    "country": "United States",
+    "province": "California",
+    "phone": "4155550100"
+  },
+  "login": {
+    "invalid": {
+      "email": "nobody@example.com",
+      "password": "definitely-wrong-password"
+    }
+  }
+}

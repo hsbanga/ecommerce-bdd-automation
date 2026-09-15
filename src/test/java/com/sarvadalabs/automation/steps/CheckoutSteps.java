@@ -43,7 +43,10 @@ public class CheckoutSteps {
 
     @Then("the checkout email field should contain the configured email")
     public void theCheckoutEmailFieldShouldContainTheConfiguredEmail() {
-        assertThat(context.page(CheckoutPage.class).emailValue()).isEqualTo(TestData.get("checkout.email"));
+        String email = TestData.get("checkout.email");
+        assertThat(context.page(CheckoutPage.class).showsEmail(email))
+                .as("checkout shows the entered email '%s' (input value or collapsed summary)", email)
+                .isTrue();
     }
 
     @Then("the checkout {word} field should contain the configured value")

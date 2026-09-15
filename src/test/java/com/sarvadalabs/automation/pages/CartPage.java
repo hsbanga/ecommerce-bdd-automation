@@ -115,7 +115,26 @@ public class CartPage extends BasePage {
         WebElement remove = findWithin(item, "cart.itemRemove")
                 .orElseThrow(() -> new IllegalStateException("No remove control for '" + productName + "'"));
         click(remove, "remove " + productName);
+        if (Locators.isDefined("cart.removeConfirm")) {
+            // Some themes ask "Are you sure?" in a dialog before removing
+            tryFind("cart.removeConfirm", Duration.ofSeconds(5)).ifPresent(confirm -> click(confirm, "cart.removeConfirm"));
+        }
         waitUntil(d -> lineItem(productName).isEmpty(), Duration.ofSeconds(20), "'" + productName + "' to disappear from the cart");
+    }
+
+    /** Sum of all line item quantities on the cart page (0 when the cart is empty). */
+    public int totalQuantity() {
+        waitForCartIdle();
+        if (isVisible("cart.emptyMessage", Duration.ofSeconds(2))) {
+            return 0;
+        }
+        int total = 0;
+        for (WebElement item : findAll("cart.items", Duration.ofSeconds(5))) {
+            total += findWithin(item, "cart.itemQuantityInput")
+                    .map(input -> parseLeadingInt(input.getAttribute("value")))
+                    .orElse(1);
+        }
+        return total;
     }
 
     /**

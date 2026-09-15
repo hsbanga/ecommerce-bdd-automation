@@ -11,6 +11,7 @@ Two worked examples ship with the repo and are the best starting points:
 | Shopify         | `stores/shopify-dawn`               | Inherits the Dawn baseline; most themes need few overrides |
 | WooCommerce     | `stores/woocommerce-askomdch`       | Classic cart/checkout selectors, `cart.updateButton`, Select2 dropdowns |
 | Magento 2       | `stores/magento-hyva`               | Hyvä theme selectors with Luma fallbacks; store code in `base.url` |
+| BigCommerce     | `stores/bigcommerce-cornerstone`    | Cornerstone theme; empty `header.cartCount`, `cart.removeConfirm`, `checkout.continueAfterEmail` |
 | Anything else   | `stores/_template`                  | Start from the commented template                       |
 
 Scenarios whose preconditions a store cannot meet report as **skipped** with a reason, never as

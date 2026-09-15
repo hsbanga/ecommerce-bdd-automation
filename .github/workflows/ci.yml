@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        store: ${{ github.event.inputs.store != '' && fromJSON(format('["{0}"]', github.event.inputs.store)) || fromJSON('["shopify-dawn", "woocommerce-askomdch", "magento-hyva"]') }}
+        store: ${{ github.event.inputs.store != '' && fromJSON(format('["{0}"]', github.event.inputs.store)) || fromJSON('["shopify-dawn", "woocommerce-askomdch", "magento-hyva", "bigcommerce-cornerstone"]') }}
     name: e2e (${{ matrix.store }})
     steps:
       - uses: actions/checkout@v5

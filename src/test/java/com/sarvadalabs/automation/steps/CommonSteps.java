@@ -3,6 +3,8 @@ package com.sarvadalabs.automation.steps;
 import com.sarvadalabs.automation.config.ConfigManager;
 import com.sarvadalabs.automation.config.TestData;
 import com.sarvadalabs.automation.context.ScenarioContext;
+import com.sarvadalabs.automation.core.Locators;
+import com.sarvadalabs.automation.pages.CartPage;
 import com.sarvadalabs.automation.pages.CollectionPage;
 import com.sarvadalabs.automation.pages.HomePage;
 import com.sarvadalabs.automation.pages.ProductPage;
@@ -46,8 +48,18 @@ public class CommonSteps {
         assertThat(viaHeader || viaUrl).as("search icon in header or path.search configured").isTrue();
     }
 
+    /**
+     * Checks the header cart badge. Stores that show no badge (header.cartCount left empty in the
+     * store profile) are checked through the cart page instead, which sums the line quantities.
+     */
     @Then("the cart badge should show {int} item(s)")
     public void theCartBadgeShouldShowItems(int expected) {
+        if (!Locators.isDefined("header.cartCount")) {
+            CartPage cart = context.page(CartPage.class).open();
+            assertThat(cart.totalQuantity()).as("total quantity on the cart page (store shows no header badge)")
+                    .isEqualTo(expected);
+            return;
+        }
         context.page(HomePage.class).waitForHeaderCartCount(expected);
         assertThat(context.page(HomePage.class).headerCartCount()).isEqualTo(expected);
     }
