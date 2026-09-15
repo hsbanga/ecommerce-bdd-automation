@@ -112,11 +112,43 @@ See [docs/ONBOARDING_A_NEW_CLIENT.md](docs/ONBOARDING_A_NEW_CLIENT.md). In short
 4. Add client-specific feature files under `features/<client>/` when their flows go beyond the
    shared scenarios, reusing the existing step definitions where possible.
 
+## Reports
+
+Every run produces two reports from the same execution:
+
+| Report | Where | Notes |
+|--------|-------|-------|
+| Cucumber HTML | `target/cucumber-reports/cucumber.html` | Self-contained file, failure screenshots embedded |
+| Allure | `mvn allure:report` → `target/site/allure-maven-plugin/index.html` | Trend history, per-step timing, environment widget, screenshots. `mvn allure:serve` opens it directly |
+
+The Allure *Environment* widget shows store, platform, base URL, browser and whether the run was
+parallel, written by the `@BeforeAll` hook. In CI the reports are published per store with history at
+`https://<owner>.github.io/<repo>/<store>/` (see below).
+
+## Parallel execution
+
+Scenarios can run in parallel with one browser per thread; the driver is `ThreadLocal` and all
+scenario state is injected per scenario, so nothing is shared.
+
+```bash
+mvn test -Dcucumber.execution.parallel.enabled=true                                  # 3 threads (default)
+mvn test -Dcucumber.execution.parallel.enabled=true -Dcucumber.execution.parallel.config.fixed.parallelism=5
+```
+
+Locally the default stays sequential (easier to watch). CI runs 3 scenarios in parallel per store.
+Keep the thread count modest against public demo stores; they rate-limit aggressive clients.
+
 ## CI
 
-`.github/workflows/ci.yml` runs the smoke suite headless on every push and pull request and
-uploads the HTML report, screenshots and log as a build artifact. Trigger it manually with a
+`.github/workflows/ci.yml` runs the smoke suite headless, 3 scenarios in parallel, for every
+example store on each push and pull request (matrix job per store). Each job uploads the Cucumber
+HTML report, screenshots, log and Allure results as build artifacts. Trigger it manually with a
 different store profile or tag expression from the Actions tab.
+
+After the matrix, the `allure-report` job builds one Allure report per store, carries the trend
+history forward from the previous publication, and pushes everything to the `gh-pages` branch, so
+the reports are browsable at `https://<owner>.github.io/<repo>/` (one link per store) once GitHub
+Pages is enabled for that branch. Pull requests only upload artifacts and never publish.
 
 ## Known behaviours and platform notes
 
@@ -133,9 +165,10 @@ different store profile or tag expression from the Actions tab.
   an explanation instead of failing. The framework never attempts to solve or bypass captchas.
 - **Skipped scenarios** are reported as skipped, not failed, when a precondition is missing
   (no credentials, captcha present). Look at the reason in the HTML report.
-- **Windows: tag expressions with spaces.** `cmd.exe` mangles `-Dcucumber.filter.tags="@a or @b"`
-  when Maven is called by full path from Git Bash. Use PowerShell:
-  `& mvn "-Dcucumber.filter.tags=@cart or @account"`, or an expression without spaces.
+- **Windows: quote every `-D` argument in PowerShell.** PowerShell splits unquoted dotted
+  properties (`-Dcucumber.execution.parallel.enabled=true` becomes an unknown "lifecycle phase") and
+  `cmd.exe` mangles tag expressions with spaces from Git Bash. This form works everywhere:
+  `mvn test "-Dstore=magento-hyva" "-Dcucumber.execution.parallel.enabled=true" "-Dcucumber.filter.tags=@cart or @account"`.
 - **Windows: loopback error.** If Selenium fails with `Unable to establish loopback connection`,
   the JDK is creating its Unix-domain socket in a temp path with an 8.3 short name. The POM already
   passes `-Djdk.net.unixdomain.tmpdir=target` to the test JVM to avoid it.

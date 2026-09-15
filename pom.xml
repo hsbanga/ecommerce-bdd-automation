@@ -23,6 +23,8 @@
     <log4j.version>2.24.3</log4j.version>
     <jackson.version>2.18.2</jackson.version>
     <surefire.version>3.5.2</surefire.version>
+    <allure.version>2.29.0</allure.version>
+    <allure.maven.version>2.12.0</allure.maven.version>
   </properties>
 
   <dependencyManagement>
@@ -98,6 +100,14 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Allure reporting: Cucumber adapter writes target/allure-results, allure-maven renders the report -->
+    <dependency>
+      <groupId>io.qameta.allure</groupId>
+      <artifactId>allure-cucumber7-jvm</artifactId>
+      <version>${allure.version}</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Logging -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -138,6 +148,17 @@
           <argLine>-Djdk.net.unixdomain.tmpdir=${project.build.directory}</argLine>
           <!-- -D properties passed on the mvn command line are forwarded to the forked test JVM,
                so -Dstore=..., -Dbrowser=..., -Dheadless=..., -Dcucumber.filter.tags=... all work. -->
+        </configuration>
+      </plugin>
+      <!-- mvn allure:report  -> target/site/allure-maven-plugin/index.html
+           mvn allure:serve   -> builds the report and opens it in a browser -->
+      <plugin>
+        <groupId>io.qameta.allure</groupId>
+        <artifactId>allure-maven</artifactId>
+        <version>${allure.maven.version}</version>
+        <configuration>
+          <reportVersion>${allure.version}</reportVersion>
+          <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
         </configuration>
       </plugin>
     </plugins>

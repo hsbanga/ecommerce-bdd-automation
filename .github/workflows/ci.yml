@@ -13,6 +13,9 @@ on:
         description: Cucumber tag expression
         default: "@smoke"
 
+permissions:
+  contents: write   # the report job pushes the Allure history to the gh-pages branch
+
 jobs:
   e2e:
     runs-on: ubuntu-latest
@@ -33,7 +36,7 @@ jobs:
 
       - uses: browser-actions/setup-chrome@v2
 
-      - name: Run Cucumber scenarios
+      - name: Run Cucumber scenarios (3 scenarios in parallel, one browser each)
         env:
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
@@ -41,9 +44,12 @@ jobs:
           mvn -B test
           -Dheadless=true
           -Dstore=${{ matrix.store }}
+          -Dcucumber.execution.parallel.enabled=true
+          -Dcucumber.execution.parallel.config.fixed.parallelism=3
+          -Dcucumber.execution.parallel.config.fixed.max-pool-size=3
           -Dcucumber.filter.tags="${{ github.event.inputs.tags || '@smoke' }}"
 
-      - name: Upload reports
+      - name: Upload Cucumber report, screenshots and log
         if: always()
         uses: actions/upload-artifact@v5
         with:
@@ -53,3 +59,77 @@ jobs:
             target/screenshots
             target/logs
           if-no-files-found: ignore
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: allure-results-${{ matrix.store }}
+          path: target/allure-results
+          if-no-files-found: ignore
+
+  # Builds one Allure report per store, keeps the last 20 runs of history on the gh-pages branch and
+  # publishes them at https://<owner>.github.io/<repo>/<store>/
+  allure-report:
+    needs: e2e
+    if: always() && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: allure-gh-pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Download Allure results of every store
+        uses: actions/download-artifact@v5
+        with:
+          pattern: allure-results-*
+          path: results
+
+      - name: Fetch previous reports (history)
+        uses: actions/checkout@v5
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Build reports with history
+        run: |
+          set -e
+          mkdir -p site
+          # keep whatever is already published (other stores, older history)
+          if [ -d gh-pages ]; then rsync -a --exclude .git gh-pages/ site/; fi
+          curl -sSL -o allure.tgz https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
+          tar -xzf allure.tgz
+          for dir in results/allure-results-*; do
+            [ -d "$dir" ] || continue
+            store="${dir#results/allure-results-}"
+            # carry the previous history forward so trend charts span runs
+            if [ -d "site/$store/history" ]; then
+              mkdir -p "$dir/history" && cp -r "site/$store/history/." "$dir/history/"
+            fi
+            printf 'store=%s\nrun=%s\nsha=%s\n' "$store" "${{ github.run_number }}" "${{ github.sha }}" >> "$dir/environment.properties"
+            cat > "$dir/executor.json" <<EOF
+          {"name":"GitHub Actions","type":"github","buildOrder":${{ github.run_number }},"buildName":"run #${{ github.run_number }} ($store)","buildUrl":"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}","reportUrl":"https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/$store/"}
+          EOF
+            rm -rf "site/$store"
+            ./allure-2.29.0/bin/allure generate "$dir" --clean -o "site/$store"
+          done
+          # landing page linking every store report
+          {
+            echo '<!doctype html><meta charset="utf-8"><title>E2E reports</title>'
+            echo '<h1>E-commerce BDD automation - Allure reports</h1><ul>'
+            for d in site/*/; do s=$(basename "$d"); [ "$s" = "history" ] && continue; echo "<li><a href=\"$s/\">$s</a></li>"; done
+            echo '</ul>'
+          } > site/index.html
+          touch site/.nojekyll
+
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: site
+          publish_branch: gh-pages
+          force_orphan: true
+          commit_message: "Allure reports for run #${{ github.run_number }}"
