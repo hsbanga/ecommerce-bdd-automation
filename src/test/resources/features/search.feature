@@ -12,15 +12,15 @@ Feature: Product search
     And the search results page should reference the search term
 
   @regression
-  Scenario Outline: Searching for "<term>" returns matching products
+  Scenario Outline: Searching for the configured "<key>" term returns matching products
     Given I am on the home page
-    When I search for "<term>"
+    When I search for the configured "<key>" term
     Then I should see search results
 
     Examples:
-      | term   |
-      | bag    |
-      | wallet |
+      | key       |
+      | validTerm |
+      | altTerm   |
 
   @regression
   Scenario: Searching for a nonsense term shows a no-results message

@@ -83,6 +83,18 @@ public final class ConfigManager {
         return template;
     }
 
+    /**
+     * The fixed part of a path template before its first placeholder, without the leading slash,
+     * e.g. {@code path.product=/products/{0}} gives {@code products/}. Useful for URL assertions
+     * that must work for any platform's URL scheme.
+     */
+    public static String pathPrefix(String key) {
+        String template = get(key);
+        int placeholder = template.indexOf('{');
+        String prefix = placeholder >= 0 ? template.substring(0, placeholder) : template;
+        return prefix.startsWith("/") ? prefix.substring(1) : prefix;
+    }
+
     private static String lookup(String key) {
         String value = firstNonBlank(System.getProperty(key), System.getenv(toEnvKey(key)), PROPS.getProperty(key));
         return value == null ? null : value.trim();

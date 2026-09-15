@@ -21,7 +21,7 @@ public class ProductPage extends BasePage {
     }
 
     public boolean isLoaded() {
-        return currentUrl().contains("/products/") && isVisible("product.title", Duration.ofSeconds(10));
+        return currentUrl().contains(ConfigManager.pathPrefix("path.product")) && isVisible("product.title", Duration.ofSeconds(10));
     }
 
     public String title() {

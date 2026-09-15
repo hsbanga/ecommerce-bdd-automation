@@ -8,7 +8,8 @@ Feature: Storefront home page
   Scenario: Home page loads with header navigation
     Given I am on the home page
     Then the page title should contain the store name
-    And the header should show the search and cart icons
+    And the header should show the cart icon
+    And product search should be available
     And the cart badge should show 0 items
 
   @regression

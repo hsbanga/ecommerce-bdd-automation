@@ -17,6 +17,7 @@
   },
   "search": {
     "validTerm": "bag",
+    "altTerm": "wallet",
     "noResultsTerm": "zzqxlorem"
   },
   "checkout": {

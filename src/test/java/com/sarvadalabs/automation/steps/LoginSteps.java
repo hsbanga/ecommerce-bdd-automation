@@ -60,7 +60,8 @@ public class LoginSteps {
                     "The store protects login with a captcha, so the invalid-login error cannot be verified automatically");
         }
         assertThat(error).as("login error message").isNotBlank();
-        assertThat(error.toLowerCase()).containsAnyOf("incorrect", "invalid", "error", "not found");
+        assertThat(error.toLowerCase()).containsAnyOf("incorrect", "invalid", "error", "not found", "unknown",
+                "not registered", "wrong", "failed", "no account", "does not match");
     }
 
     @Then("I should be on the account page")

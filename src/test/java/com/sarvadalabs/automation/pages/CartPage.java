@@ -2,6 +2,7 @@ package com.sarvadalabs.automation.pages;
 
 import com.sarvadalabs.automation.config.ConfigManager;
 import com.sarvadalabs.automation.core.BasePage;
+import com.sarvadalabs.automation.core.Locators;
 import com.sarvadalabs.automation.util.Money;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -72,6 +73,13 @@ public class CartPage extends BasePage {
                 .orElseThrow(() -> new IllegalStateException("No quantity input for '" + productName + "'"));
         replaceValue(input, String.valueOf(quantity));
         input.sendKeys(Keys.TAB); // fires the change event Shopify themes listen for
+        if (Locators.isDefined("cart.updateButton")) {
+            // WooCommerce-style carts apply quantity changes only after "Update cart"
+            tryFind("cart.updateButton", Duration.ofSeconds(3)).ifPresent(button -> {
+                waitUntil(d -> button.isEnabled(), Duration.ofSeconds(5), "update cart button to become enabled");
+                click(button, "cart.updateButton");
+            });
+        }
         waitForCartRefresh(input);
         waitForQuantity(productName, quantity);
     }

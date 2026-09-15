@@ -41,7 +41,7 @@ public class HomePage extends BasePage {
             log.warn("No search input found, navigating to the search URL directly");
             openPath(ConfigManager.path("path.search", term));
         }
-        waitForUrlContains("search");
+        waitForUrlContains(ConfigManager.pathPrefix("path.search"));
         waitForPageReady();
         return new SearchResultsPage(driver);
     }

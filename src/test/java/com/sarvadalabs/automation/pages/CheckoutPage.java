@@ -72,6 +72,23 @@ public class CheckoutPage extends BasePage {
         if (field.isPresent()) {
             scrollIntoView(field.get());
             new Select(field.get()).selectByVisibleText(visibleText);
+            return;
+        }
+        // Select2 / Chosen style widgets hide the native <select>; drive it through the DOM instead.
+        Optional<WebElement> hidden = findAll(key, Duration.ofSeconds(1)).stream().findFirst();
+        if (hidden.isPresent() && "select".equalsIgnoreCase(hidden.get().getTagName())) {
+            log.info("Checkout select '{}' is hidden behind a widget, selecting '{}' via DOM", key, visibleText);
+            Object matched = js("""
+                    const select = arguments[0], wanted = arguments[1].trim().toLowerCase();
+                    const option = [...select.options].find(o => o.text.trim().toLowerCase() === wanted);
+                    if (!option) { return false; }
+                    select.value = option.value;
+                    select.dispatchEvent(new Event('change', { bubbles: true }));
+                    return true;
+                    """, hidden.get(), visibleText);
+            if (!Boolean.TRUE.equals(matched)) {
+                throw new IllegalStateException("Option '" + visibleText + "' not found in checkout select '" + key + "'");
+            }
         } else {
             log.warn("Checkout select '{}' not present on this store, skipping", key);
         }

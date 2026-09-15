@@ -17,6 +17,7 @@
   },
   "search": {
     "validTerm": "shirt",
+    "altTerm": "jeans",
     "noResultsTerm": "zzqxlorem"
   },
   "checkout": {

@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
     inputs:
       store:
-        description: Store profile (folder under src/test/resources/stores)
-        default: shopify-dawn
+        description: Store profile (folder under src/test/resources/stores); empty = all example stores
+        default: ""
       tags:
         description: Cucumber tag expression
         default: "@smoke"
@@ -17,6 +17,11 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        store: ${{ github.event.inputs.store != '' && fromJSON(format('["{0}"]', github.event.inputs.store)) || fromJSON('["shopify-dawn", "woocommerce-askomdch"]') }}
+    name: e2e (${{ matrix.store }})
     steps:
       - uses: actions/checkout@v5
 
@@ -35,14 +40,14 @@ jobs:
         run: >
           mvn -B test
           -Dheadless=true
-          -Dstore=${{ github.event.inputs.store || 'shopify-dawn' }}
+          -Dstore=${{ matrix.store }}
           -Dcucumber.filter.tags="${{ github.event.inputs.tags || '@smoke' }}"
 
       - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: cucumber-reports
+          name: cucumber-reports-${{ matrix.store }}
           path: |
             target/cucumber-reports
             target/screenshots

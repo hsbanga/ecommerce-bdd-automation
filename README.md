@@ -3,8 +3,14 @@
 Reusable UI test automation for Shopify and other e-commerce storefronts, built with
 **Java 21 · Cucumber 7 (Gherkin BDD) · Selenium 4 · JUnit 5 · Maven**.
 
-The framework ships with a working profile for the public Shopify *Dawn* demo store.
+The framework ships with two working example profiles: the public Shopify *Dawn* demo store and
+a public WooCommerce practice store (AskOmDch). The same feature files run against both.
 Onboarding a new client store means adding a folder of configuration, not writing new Java.
+
+| Profile (`-Dstore=`)     | Platform    | Target                                  |
+|--------------------------|-------------|-----------------------------------------|
+| `shopify-dawn` (default) | Shopify     | https://theme-dawn-demo.myshopify.com   |
+| `woocommerce-askomdch`   | WooCommerce | https://askomdch.com                    |
 
 ## Quick start
 

@@ -1,0 +1,36 @@
+{
+  "_comment": "No sold-out product and no variable product exist on this store, so those keys are omitted and the related scenarios skip.",
+  "products": {
+    "inStock": {
+      "handle": "blue-shoes",
+      "name": "Blue Shoes",
+      "price": "45.00"
+    }
+  },
+  "collections": {
+    "all": "men",
+    "women": "women"
+  },
+  "search": {
+    "validTerm": "jeans",
+    "altTerm": "shoes",
+    "noResultsTerm": "zzqxlorem"
+  },
+  "checkout": {
+    "email": "qa.automation@example.com",
+    "firstName": "QA",
+    "lastName": "Automation",
+    "address1": "123 Test Street",
+    "city": "San Francisco",
+    "postalCode": "94105",
+    "country": "United States (US)",
+    "province": "California",
+    "phone": "4155550100"
+  },
+  "login": {
+    "invalid": {
+      "email": "nobody@example.com",
+      "password": "definitely-wrong-password"
+    }
+  }
+}

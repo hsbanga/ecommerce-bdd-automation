@@ -1,5 +1,6 @@
 package com.sarvadalabs.automation.steps;
 
+import com.sarvadalabs.automation.config.ConfigManager;
 import com.sarvadalabs.automation.config.TestData;
 import com.sarvadalabs.automation.context.ScenarioContext;
 import com.sarvadalabs.automation.pages.ProductPage;
@@ -7,6 +8,7 @@ import com.sarvadalabs.automation.util.Money;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.opentest4j.TestAbortedException;
 
 import java.math.BigDecimal;
 
@@ -25,8 +27,13 @@ public class ProductSteps {
         return TestData.get("products." + context.get(ScenarioContext.CURRENT_PRODUCT_KEY, String.class) + "." + field);
     }
 
+    /** Skips the scenario when the store profile has no product configured under that key. */
     @Given("I open the {string} product")
     public void iOpenTheProduct(String dataKey) {
+        if (!TestData.has("products." + dataKey + ".handle")) {
+            throw new TestAbortedException("No '" + dataKey + "' product configured for store '"
+                    + ConfigManager.store() + "' (products." + dataKey + ".handle in testdata.json)");
+        }
         context.set(ScenarioContext.CURRENT_PRODUCT_KEY, dataKey);
         context.page(ProductPage.class).open(data("handle"));
     }

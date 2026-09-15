@@ -1,5 +1,6 @@
 package com.sarvadalabs.automation.pages;
 
+import com.sarvadalabs.automation.config.ConfigManager;
 import com.sarvadalabs.automation.core.BasePage;
 import com.sarvadalabs.automation.core.Locators;
 import org.openqa.selenium.By;
@@ -44,7 +45,7 @@ public abstract class ProductGridPage extends BasePage {
 
     public ProductPage openFirstProduct() {
         click("grid.firstItemLink");
-        waitForUrlContains("/products/");
+        waitForUrlContains(ConfigManager.pathPrefix("path.product"));
         waitForPageReady();
         return new ProductPage(driver);
     }
