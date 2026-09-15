@@ -1,0 +1,6 @@
+"Epic","Feature","Story","FAILED","BROKEN","PASSED","SKIPPED","UNKNOWN"
+"","Product search","Searching with a configured valid term returns results","0","0","1","0","0"
+"","Product details page","Add a product to the cart from the product page","0","0","1","0","0"
+"","Customer login","Login page shows the sign-in form","0","0","1","0","0"
+"","Shopping cart","Cart page shows the added line item and totals","0","0","1","0","0"
+"","Storefront home page","Home page loads with header navigation","0","0","1","0","0"

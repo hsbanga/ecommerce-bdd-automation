@@ -1,0 +1,16 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Tue Sep 15 18:55:45 UTC 2026","Tue Sep 15 18:55:59 UTC 2026","14319","","Product search","","Searching with a configured valid term returns results","","Searching with a configured valid term returns results","  As a shopper
+  I want to search the catalogue by keyword
+  So that I can quickly find products"
+"passed","Tue Sep 15 18:55:45 UTC 2026","Tue Sep 15 18:55:57 UTC 2026","12295","","Storefront home page","","Home page loads with header navigation","","Home page loads with header navigation","  As a shopper
+  I want the storefront to load with its core navigation
+  So that I can start browsing products"
+"passed","Tue Sep 15 18:55:57 UTC 2026","Tue Sep 15 18:55:59 UTC 2026","1799","","Customer login","","Login page shows the sign-in form","","Login page shows the sign-in form","  As a returning customer
+  I want to sign in to my account
+  So that I can check out faster and see my orders"
+"passed","Tue Sep 15 18:55:45 UTC 2026","Tue Sep 15 18:56:02 UTC 2026","17305","","Shopping cart","","Cart page shows the added line item and totals","","Cart page shows the added line item and totals","  As a shopper
+  I want to review and change the items in my cart
+  So that my order is correct before checkout"
+"passed","Tue Sep 15 18:55:59 UTC 2026","Tue Sep 15 18:56:05 UTC 2026","5627","","Product details page","","Add a product to the cart from the product page","","Add a product to the cart from the product page","  As a shopper
+  I want to view product details and add items to my cart
+  So that I can buy what I need"
