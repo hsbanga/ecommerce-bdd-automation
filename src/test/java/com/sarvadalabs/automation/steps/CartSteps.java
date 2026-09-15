@@ -7,6 +7,7 @@ import com.sarvadalabs.automation.context.ScenarioContext;
 import com.sarvadalabs.automation.pages.CartPage;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.opentest4j.TestAbortedException;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -65,9 +66,10 @@ public class CartSteps {
 
     @Then("the cart API should report {int} item(s)")
     public void theCartApiShouldReportItems(int expected) {
-        assertThat(ConfigManager.platform())
-                .as("the storefront cart API step only applies to Shopify stores")
-                .isEqualTo("shopify");
+        if (!"shopify".equals(ConfigManager.platform())) {
+            throw new TestAbortedException("The storefront cart API check only applies to Shopify stores (store.platform="
+                    + ConfigManager.platform() + ")");
+        }
         ShopifyCartApi api = new ShopifyCartApi(context.driver());
         // The storefront may still be persisting the last UI change; give it a few seconds.
         int actual = api.itemCount();

@@ -4,6 +4,18 @@ Goal: run the shared scenarios against a client's storefront within an hour, the
 client-specific suite on top. No Java changes are needed for a Shopify store; other platforms
 usually need only locator overrides.
 
+Two worked examples ship with the repo and are the best starting points:
+
+| Client platform | Copy this profile                   | Notes                                                   |
+|-----------------|-------------------------------------|---------------------------------------------------------|
+| Shopify         | `stores/shopify-dawn`               | Inherits the Dawn baseline; most themes need few overrides |
+| WooCommerce     | `stores/woocommerce-askomdch`       | Classic cart/checkout selectors, `cart.updateButton`, Select2 dropdowns |
+| Anything else   | `stores/_template`                  | Start from the commented template                       |
+
+Scenarios whose preconditions a store cannot meet report as **skipped** with a reason, never as
+failed: no `products.soldOut` entry, no `products.inStock.variant`, a non-Shopify platform for the
+cart API check, missing login credentials, or a captcha in front of login.
+
 ## 1. Create the store profile
 
 ```bash

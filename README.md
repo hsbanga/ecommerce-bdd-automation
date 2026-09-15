@@ -118,8 +118,10 @@ different store profile or tag expression from the Actions tab.
 
 ## Known behaviours and platform notes
 
-- **Verified run.** Against the Dawn demo store the full suite gives 16 passed, 2 skipped, 0 failed
-  (headless Chrome, ~2 minutes sequentially).
+- **Verified runs** (headless Chrome, sequential): Shopify Dawn 16 passed / 2 skipped / 0 failed in
+  about 2 minutes; WooCommerce AskOmDch 15 passed / 3 skipped / 0 failed in about 4.5 minutes.
+  Skips on WooCommerce: no sold-out product exists there, the cart API check is Shopify-only, and
+  valid login needs credentials.
 - **Captcha on login.** Shopify may put an hCaptcha challenge in front of customer login for
   automated browsers. The invalid-login scenario detects the widget and marks itself *skipped* with
   an explanation instead of failing. The framework never attempts to solve or bypass captchas.
