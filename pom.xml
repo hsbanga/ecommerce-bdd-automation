@@ -128,7 +128,14 @@
           <includes>
             <include>**/TestRunner.java</include>
           </includes>
+          <!-- Surefire can also discover the cucumber engine directly, which would execute every
+               feature a second time next to the suite. Only the suite engine should be the entry point. -->
+          <excludeJUnit5Engines>cucumber</excludeJUnit5Engines>
           <trimStackTrace>false</trimStackTrace>
+          <!-- Java NIO selectors on Windows open a Unix-domain socket in the temp dir. When that dir is an
+               8.3 short-name path (e.g. C:\Users\HARJIN~1\...) the connect fails with "Unable to establish
+               loopback connection" and Selenium cannot start. Using the build directory avoids that. -->
+          <argLine>-Djdk.net.unixdomain.tmpdir=${project.build.directory}</argLine>
           <!-- -D properties passed on the mvn command line are forwarded to the forked test JVM,
                so -Dstore=..., -Dbrowser=..., -Dheadless=..., -Dcucumber.filter.tags=... all work. -->
         </configuration>

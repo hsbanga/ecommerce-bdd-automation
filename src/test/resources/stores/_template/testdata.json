@@ -1,0 +1,39 @@
+{
+  "_comment": "TEMPLATE test data. Every feature reads its values from here by key so the same feature files run against any store.",
+  "products": {
+    "inStock": {
+      "handle": "product-url-handle",
+      "name": "Product Display Name",
+      "variant": "Optional variant value, delete this key when the product has no options",
+      "price": "99.00"
+    },
+    "soldOut": {
+      "handle": "sold-out-product-handle",
+      "name": "Sold Out Product Name"
+    }
+  },
+  "collections": {
+    "all": "all"
+  },
+  "search": {
+    "validTerm": "shirt",
+    "noResultsTerm": "zzqxlorem"
+  },
+  "checkout": {
+    "email": "qa.automation@example.com",
+    "firstName": "QA",
+    "lastName": "Automation",
+    "address1": "123 Test Street",
+    "city": "City",
+    "postalCode": "00000",
+    "country": "Country as shown in the dropdown",
+    "province": "State/Province as shown in the dropdown",
+    "phone": "0000000000"
+  },
+  "login": {
+    "invalid": {
+      "email": "nobody@example.com",
+      "password": "definitely-wrong-password"
+    }
+  }
+}

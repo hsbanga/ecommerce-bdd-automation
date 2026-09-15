@@ -1,0 +1,50 @@
+name: E2E tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      store:
+        description: Store profile (folder under src/test/resources/stores)
+        default: shopify-dawn
+      tags:
+        description: Cucumber tag expression
+        default: "@smoke"
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - uses: browser-actions/setup-chrome@v1
+
+      - name: Run Cucumber scenarios
+        env:
+          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+        run: >
+          mvn -B test
+          -Dheadless=true
+          -Dstore=${{ github.event.inputs.store || 'shopify-dawn' }}
+          -Dcucumber.filter.tags="${{ github.event.inputs.tags || '@smoke' }}"
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-reports
+          path: |
+            target/cucumber-reports
+            target/screenshots
+            target/logs
+          if-no-files-found: ignore
