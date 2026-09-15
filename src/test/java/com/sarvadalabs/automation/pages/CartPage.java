@@ -6,6 +6,7 @@ import com.sarvadalabs.automation.core.Locators;
 import com.sarvadalabs.automation.util.Money;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -117,10 +118,24 @@ public class CartPage extends BasePage {
         waitUntil(d -> lineItem(productName).isEmpty(), Duration.ofSeconds(20), "'" + productName + "' to disappear from the cart");
     }
 
+    /**
+     * Clicks through to checkout. Some themes intercept the click with an authentication popup
+     * instead of navigating; in that case the checkout URL is opened directly (guest checkout).
+     */
     public CheckoutPage proceedToCheckout() {
         log.info("Proceeding to checkout");
+        String checkoutPrefix = ConfigManager.pathPrefix("path.checkout");
+        String cartPrefix = ConfigManager.pathPrefix("path.cart");
         click("cart.checkoutButton");
-        waitForUrlContains("checkout");
+        try {
+            waitUntil(d -> {
+                String url = d.getCurrentUrl();
+                return url.contains(checkoutPrefix) && !url.contains(cartPrefix);
+            }, Duration.ofSeconds(10), "navigation from cart to checkout");
+        } catch (TimeoutException e) {
+            log.warn("Checkout button did not navigate (auth popup?); opening the checkout URL directly");
+            openPath(ConfigManager.path("path.checkout"));
+        }
         return new CheckoutPage(driver);
     }
 

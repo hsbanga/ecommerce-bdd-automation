@@ -1,0 +1,36 @@
+{
+  "_comment": "Simple (non-configurable) product chosen so no variant selection is needed. No sold-out product is known on this demo, so that scenario skips.",
+  "products": {
+    "inStock": {
+      "handle": "luna-wall-sconce",
+      "name": "Luna Wall Sconce",
+      "price": "145.00"
+    }
+  },
+  "collections": {
+    "all": "living-room",
+    "lighting": "living-room/living-room-lighting"
+  },
+  "search": {
+    "validTerm": "sofa",
+    "altTerm": "lamp",
+    "noResultsTerm": "zzqxlorem"
+  },
+  "checkout": {
+    "email": "qa.automation@example.com",
+    "firstName": "QA",
+    "lastName": "Automation",
+    "address1": "123 Test Street",
+    "city": "San Francisco",
+    "postalCode": "94105",
+    "country": "United States",
+    "province": "California",
+    "phone": "4155550100"
+  },
+  "login": {
+    "invalid": {
+      "email": "nobody@example.com",
+      "password": "definitely-wrong-password"
+    }
+  }
+}

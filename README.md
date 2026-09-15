@@ -11,6 +11,7 @@ Onboarding a new client store means adding a folder of configuration, not writin
 |--------------------------|-------------|-----------------------------------------|
 | `shopify-dawn` (default) | Shopify     | https://theme-dawn-demo.myshopify.com   |
 | `woocommerce-askomdch`   | WooCommerce | https://askomdch.com                    |
+| `magento-hyva`           | Magento 2   | https://demo.hyva.io/default (Hyvä theme) |
 
 ## Quick start
 
@@ -119,9 +120,10 @@ different store profile or tag expression from the Actions tab.
 ## Known behaviours and platform notes
 
 - **Verified runs** (headless Chrome, sequential): Shopify Dawn 16 passed / 2 skipped / 0 failed in
-  about 2 minutes; WooCommerce AskOmDch 15 passed / 3 skipped / 0 failed in about 4.5 minutes.
-  Skips on WooCommerce: no sold-out product exists there, the cart API check is Shopify-only, and
-  valid login needs credentials.
+  about 2 minutes; WooCommerce AskOmDch 15 passed / 3 skipped / 0 failed in about 4.5 minutes;
+  Magento Hyvä 15 passed / 3 skipped / 0 failed in about 4 minutes. Skips on the non-Shopify
+  stores: no sold-out product exists there, the cart API check is Shopify-only, and valid login
+  needs credentials.
 - **Captcha on login.** Shopify may put an hCaptcha challenge in front of customer login for
   automated browsers. The invalid-login scenario detects the widget and marks itself *skipped* with
   an explanation instead of failing. The framework never attempts to solve or bypass captchas.
